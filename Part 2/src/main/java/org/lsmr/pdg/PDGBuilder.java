@@ -2,13 +2,24 @@
 
 package org.lsmr.pdg;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.lsmr.cfg.ControlFlowGraph;
 import org.lsmr.cfg.Edge;
 import org.lsmr.cfg.Node;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 // Builds a PDG from a CFG in three steps:
 // - Create nodes for each real CFG node (exclude exit/throw, include entry).
@@ -229,7 +240,7 @@ public class PDGBuilder {
     // Strips the {@code "N: "} numeric counter prefix from a node label and returns the statement text.
     static String stripPrefix(String label) {
         int colon = label.indexOf(':');
-        if (colon >= 0 && colon + 1 < label.length())
+        if (colon >= 0)
             return label.substring(colon + 1).trim();
         return label;
     }
