@@ -104,23 +104,22 @@ public class PDGBuilder {
 
     // Phase 2: A CONTROL edge {@code A->node} added to the PDG.
     private void computeControlDependence(ProgramDependenceGraph pdg,
-                                          Map<Node, PDGNode> nodeMap,
-                                          DominatorTree postDomTree) {
+                                        Map<Node, PDGNode> nodeMap,
+                                        DominatorTree postDomTree) {
 
         Set<PDGEdge> seen = new HashSet<>();
 
+        // Original direct control dependence computation (RESTORED)
         for (Node a : cfg.nodes()) {
             PDGNode pdgA = nodeMap.get(a);
-            if (pdgA == null) continue; // skip virtual exit nodes
+            if (pdgA == null) continue;
 
             Node ipostdomA = postDomTree.getImmediatePostDominator(a);
-            // null == virtual super-exit root; walk stops when current == null
 
             for (Edge e : a.outEdges()) {
                 Node b = e.target();
                 if (b == null) continue;
 
-                // Walk from b up to (exclusive) ipostdomA
                 Node current = b;
                 while (current != null && !current.equals(ipostdomA)) {
                     PDGNode pdgCurrent = nodeMap.get(current);
@@ -131,6 +130,24 @@ public class PDGBuilder {
                         }
                     }
                     current = postDomTree.getImmediatePostDominator(current);
+                }
+            }
+        }
+
+        // Transitive closure: if A controls B and B controls C, add A -> C.
+        boolean changed = true;
+        while (changed) {
+            changed = false;
+            List<PDGEdge> current = new ArrayList<>(pdg.getEdgesOfType(PDGEdge.PDGEdgeType.CONTROL));
+            for (PDGEdge e1 : current) {
+                for (PDGEdge e2 : current) {
+                    if (e1.getTarget().equals(e2.getSource())) {
+                        PDGEdge transitive = new PDGEdge(e1.getSource(), e2.getTarget());
+                        if (seen.add(transitive)) {
+                            pdg.addEdge(transitive);
+                            changed = true;
+                        }
+                    }
                 }
             }
         }
