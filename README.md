@@ -29,18 +29,22 @@ Project/
 │               ├── WorkingGraph.java
 │               └── pom.xml
 │
-└── Part 2/                         PDG module (this assignment)
-    ├── pom.xml
-    └── src/
-        ├── main/java/org/lsmr/pdg/
-        │   ├── ControlFlowGraph.java     (re-exported from CFG module)
-        │   ├── DominatorTree.java        Post-dominator tree builder
-        │   ├── PDGBuilder.java           Main entry point — builds a PDG from a CFG
-        │   ├── PDGEdge.java              Control- and data-dependence edge model
-        │   ├── PDGNode.java              PDG node wrapping a CFG node
-        │   └── ProgramDependenceGraph.java  PDG container with query API
-        └── test/java/org/lsmr/pdg/
-            └── PDGBuilderTest.java       JUnit 5 test suite (79 tests)
+├── Part 2/                         PDG module
+│   ├── pom.xml
+│   └── src/
+│       ├── main/java/org/lsmr/pdg/
+│       │   ├── ControlFlowGraph.java     (re-exported from CFG module)
+│       │   ├── DominatorTree.java        Post-dominator tree builder
+│       │   ├── PDGBuilder.java           Main entry point — builds a PDG from a CFG
+│       │   ├── PDGEdge.java              Control- and data-dependence edge model
+│       │   ├── PDGNode.java              PDG node wrapping a CFG node
+│       │   └── ProgramDependenceGraph.java  PDG container with query API
+│       └── test/java/org/lsmr/pdg/
+│           └── PDGBuilderTest.java       JUnit 5 test suite (79 tests)
+│
+├── Part 3/
+│   ├── pom.xml
+│   └── src/
 ```
 
 ---
