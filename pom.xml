@@ -11,6 +11,7 @@
   <modules>
     <module>CFG-W26/CPSC 499.02/src/org/lsmr/cfg</module>
     <module>Part 2</module>
+    <module>Part 3</module>
   </modules>
 
   <properties>
