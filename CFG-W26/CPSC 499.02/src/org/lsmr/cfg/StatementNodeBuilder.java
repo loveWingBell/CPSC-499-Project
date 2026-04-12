@@ -438,16 +438,6 @@ public class StatementNodeBuilder implements Java1_2ANTLRParserVisitor<WorkingGr
 		return s;
 	}
 
-	WorkingGraph visitLinearStatement(RuleContext ctx) {
-		ControlFlowGraph g = getGraph(ctx);
-		WorkingGraph s = new WorkingGraph();
-
-		s.node = g.buildNode(nodeCounter++ + ": " + ctx.accept(new TreePrinter()));
-		s.edges.add(g.buildEdge(s.node, null, EdgeLabel.BLANK));
-
-		return s;
-	}
-
 	@Override
 	public WorkingGraph visitBreakStatement(BreakStatementContext ctx) {
 		ControlFlowGraph g = getGraph(ctx);
@@ -588,7 +578,9 @@ public class StatementNodeBuilder implements Java1_2ANTLRParserVisitor<WorkingGr
 			WorkingGraph elseNode = visitElseClause(elseClause);
 
 			s.edges.add(g.buildEdge(s.node, elseNode.node, EdgeLabel.FALSE));
-			// s.connect(elseNode);
+			s.edges.addAll(elseNode.edges);
+			s.breakEdges.putAll(elseNode.breakEdges);
+			s.continueEdges.putAll(elseNode.continueEdges);
 		}
 		else
 			s.edges.add(g.buildEdge(s.node, null, EdgeLabel.FALSE));

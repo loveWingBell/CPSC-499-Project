@@ -4864,7 +4864,7 @@ public class Java1_2ANTLRParser extends Parser {
 			setState(728);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 180658798498198L) != 0) || _la==Identifier) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 198250984542614L) != 0) || _la==Identifier) {
 				{
 				{
 				setState(725);
@@ -5690,6 +5690,7 @@ public class Java1_2ANTLRParser extends Parser {
 			case STRICTFP:
 			case SYNCHRONIZED:
 			case TRANSIENT:
+			case VOID:
 			case VOLATILE:
 			case Identifier:
 				enterOuterAlt(_localctx, 2);
@@ -5778,8 +5779,8 @@ public class Java1_2ANTLRParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class InterfaceMethodDeclarationContext extends ParserRuleContext {
-		public TypeContext type() {
-			return getRuleContext(TypeContext.class,0);
+		public ResultContext result() {
+			return getRuleContext(ResultContext.class,0);
 		}
 		public IdentifierContext identifier() {
 			return getRuleContext(IdentifierContext.class,0);
@@ -5833,7 +5834,7 @@ public class Java1_2ANTLRParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(832);
-			type();
+			result();
 			setState(833);
 			identifier();
 			setState(834);
@@ -6652,9 +6653,9 @@ public class Java1_2ANTLRParser extends Parser {
 		"\u033a\u033c\u0003p8\u0000\u033b\u033a\u0001\u0000\u0000\u0000\u033c\u033f"+
 		"\u0001\u0000\u0000\u0000\u033d\u033b\u0001\u0000\u0000\u0000\u033d\u033e"+
 		"\u0001\u0000\u0000\u0000\u033e\u0340\u0001\u0000\u0000\u0000\u033f\u033d"+
-		"\u0001\u0000\u0000\u0000\u0340\u0341\u0003\u0006\u0003\u0000\u0341\u0342"+
-		"\u0003\u0000\u0000\u0000\u0342\u0344\u0003\u00b4Z\u0000\u0343\u0345\u0003"+
-		"\n\u0005\u0000\u0344\u0343\u0001\u0000\u0000\u0000\u0344\u0345\u0001\u0000"+
+		"\u0001\u0000\u0000\u0000\u0340\u0341\u0003\u009eO\u0000\u0341\u0342\u0003"+
+		"\u0000\u0000\u0000\u0342\u0344\u0003\u00b4Z\u0000\u0343\u0345\u0003\n"+
+		"\u0005\u0000\u0344\u0343\u0001\u0000\u0000\u0000\u0344\u0345\u0001\u0000"+
 		"\u0000\u0000\u0345\u0347\u0001\u0000\u0000\u0000\u0346\u0348\u0003\u00a0"+
 		"P\u0000\u0347\u0346\u0001\u0000\u0000\u0000\u0347\u0348\u0001\u0000\u0000"+
 		"\u0000\u0348\u0349\u0001\u0000\u0000\u0000\u0349\u034a\u0005/\u0000\u0000"+

@@ -223,7 +223,7 @@ interfaceMemberDeclaration          	: interfaceMethodDeclaration
 									| constantDeclaration 
 									| classOrInterfaceDeclaration
 									;
-interfaceMethodDeclaration          	: modifier* type identifier formalParameters dims? throws_? SEMICOLON;
+interfaceMethodDeclaration          	: modifier* result identifier formalParameters dims? throws_? SEMICOLON ;
 constantDeclaration					: modifier* type identifier variableDeclarators SEMICOLON ;
 qualifiedIdentifiers             	: qualifiedIdentifier (COMMA qualifiedIdentifier)*;
 formalParameters                    	: OPEN_PARENTHESIS (formalParameter (COMMA formalParameter)*)? CLOSE_PARENTHESIS;

@@ -206,13 +206,14 @@ public class ControlFlowGraph {
 			list2.addAll(nodeList);
 
 		if(list1.size() != list2.size()) {
-			System.err.println("Node sets differ in size: " + list1.size() + ", " + list2.size());
+			// System.err.println("Node sets differ in size: " + list1.size() + ", " +
+			// list2.size());
 			return false;
 		}
 
 		for(Node n : list1)
 			if(!list2.contains(n)) {
-				System.err.println("Second node set does not contain: " + n);
+				// System.err.println("Second node set does not contain: " + n);
 				return false;
 			}
 
@@ -225,7 +226,7 @@ public class ControlFlowGraph {
 
 		for(Edge edge : edges1) {
 			if(!edges2.contains(edge)) {
-				System.err.println("Second edge set does not contain: " + edge);
+				// System.err.println("Second edge set does not contain: " + edge);
 				return false;
 			}
 		}
