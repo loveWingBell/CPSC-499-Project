@@ -1,89 +1,95 @@
 [
   {
     "subject": "Subject1",
-    "changePoint": 0,
-    "expectedImpactedNodes": [1, 2, 3],
-    "note": "x (node 0) flows through y (node 1) and z (node 2) to return (node 3)"
-  },
-  {
-    "subject": "Subject1",
     "changePoint": 1,
-    "expectedImpactedNodes": [2, 3],
-    "note": "y (node 1) flows through z (node 2) to return (node 3)"
-  },
-  {
-    "subject": "Subject1",
-    "changePoint": 2,
-    "expectedImpactedNodes": [3],
-    "note": "z (node 2) flows directly to return (node 3)"
-  },
-  {
-    "subject": "Subject1",
-    "changePoint": 3,
-    "expectedImpactedNodes": [],
-    "note": "return (node 3) is a leaf; nothing depends on it"
-  },
-
-  {
-    "subject": "Subject2",
-    "changePoint": 0,
-    "expectedImpactedNodes": [1, 2],
-    "note": "predicate (node 0) controls both branches via CONTROL edges"
-  },
-  {
-    "subject": "Subject2",
-    "changePoint": 1,
-    "expectedImpactedNodes": [],
-    "note": "true-branch return (node 1) is a leaf"
-  },
-  {
-    "subject": "Subject2",
-    "changePoint": 2,
-    "expectedImpactedNodes": [],
-    "note": "false-branch return (node 2) is a leaf"
-  },
-
-  {
-    "subject": "Subject3",
-    "changePoint": 0,
-    "expectedImpactedNodes": [3, 5],
-    "note": "sum=0 (node 0) flows to loop body (node 3) and return (node 5); i chain is separate"
-  },
-  {
-    "subject": "Subject3",
-    "changePoint": 1,
-    "expectedImpactedNodes": [2, 3, 4, 5],
-    "note": "i=0 (node 1) flows to condition (2), body (3), increment (4), return (5)"
-  },
-  {
-    "subject": "Subject3",
-    "changePoint": 4,
-    "expectedImpactedNodes": [2, 3, 5],
-    "note": "i++ (node 4) feeds back to condition (2), body (3), and return (5); node 4 itself excluded"
-  },
-
-  {
-    "subject": "Subject4",
-    "changePoint": 0,
     "expectedImpactedNodes": [2, 3, 4],
-    "note": "x=a*2 (node 0) flows to predicate (2), body (3), return (4); y is independent so node 1 NOT impacted"
+    "note": "x (node 1) flows via data edges to y (2), z (3), and return (4)"
   },
   {
-    "subject": "Subject4",
-    "changePoint": 1,
-    "expectedImpactedNodes": [4],
-    "note": "y=b+1 (node 1) flows only to return (4); nodes 2 and 3 depend only on x"
-  },
-  {
-    "subject": "Subject4",
+    "subject": "Subject1",
     "changePoint": 2,
     "expectedImpactedNodes": [3, 4],
-    "note": "predicate (node 2) controls body (3) via CONTROL; body redefines x which flows to return (4)"
+    "note": "y (node 2) flows to z (3) then return (4)"
+  },
+  {
+    "subject": "Subject1",
+    "changePoint": 3,
+    "expectedImpactedNodes": [4],
+    "note": "z (node 3) flows to return (4)"
+  },
+  {
+    "subject": "Subject1",
+    "changePoint": 4,
+    "expectedImpactedNodes": [],
+    "note": "return (node 4) is a leaf; no statements depend on it"
+  },
+
+  {
+    "subject": "Subject2",
+    "changePoint": 1,
+    "expectedImpactedNodes": [3, 4],
+    "note": "predicate (node 1) controls both return statements (3, 4); block node 2 is a PDG over-approximation"
+  },
+  {
+    "subject": "Subject2",
+    "changePoint": 3,
+    "expectedImpactedNodes": [],
+    "note": "true-branch return (node 3) is a leaf"
+  },
+  {
+    "subject": "Subject2",
+    "changePoint": 4,
+    "expectedImpactedNodes": [],
+    "note": "false-branch return (node 4) is a leaf"
+  },
+
+  {
+    "subject": "Subject3",
+    "changePoint": 1,
+    "expectedImpactedNodes": [5, 7],
+    "note": "sum=0 (node 1) flows to the loop body (5) and return (7); the i-chain is independent"
+  },
+  {
+    "subject": "Subject3",
+    "changePoint": 2,
+    "expectedImpactedNodes": [3, 5, 6, 7],
+    "note": "i=0 (node 2) flows to condition (3), body (5), increment (6), return (7); block node 4 is a PDG over-approximation"
+  },
+  {
+    "subject": "Subject3",
+    "changePoint": 5,
+    "expectedImpactedNodes": [7],
+    "note": "sum=sum+i (node 5) redefines sum, which flows to return (7)"
+  },
+  {
+    "subject": "Subject3",
+    "changePoint": 6,
+    "expectedImpactedNodes": [3, 5, 7],
+    "note": "i++ (node 6) redefines i, feeds back to condition (3) and body (5); block node 4 is a PDG over-approximation"
+  },
+
+  {
+    "subject": "Subject4",
+    "changePoint": 1,
+    "expectedImpactedNodes": [3, 5, 6],
+    "note": "x=a*2 (node 1) flows to predicate (3), body (5), and return (6); block node 4 is a PDG over-approximation"
+  },
+  {
+    "subject": "Subject4",
+    "changePoint": 2,
+    "expectedImpactedNodes": [6],
+    "note": "y=b+1 (node 2) flows only to return (6); nodes 3 and 5 depend only on x"
   },
   {
     "subject": "Subject4",
     "changePoint": 3,
-    "expectedImpactedNodes": [4],
-    "note": "x=x-1 (node 3) redefines x which flows to return (4)"
+    "expectedImpactedNodes": [5, 6],
+    "note": "predicate (node 3) controls the body (5), which redefines x flowing to return (6); block node 4 is a PDG over-approximation"
+  },
+  {
+    "subject": "Subject4",
+    "changePoint": 5,
+    "expectedImpactedNodes": [6],
+    "note": "x=x-1 (node 5) redefines x, which flows to return x+y (6)"
   }
 ]
