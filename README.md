@@ -159,4 +159,31 @@ Tests run: 79, Failures: 0, Errors: 0, Skipped: 0
 
 Surefire reports are written to `Part 2/target/surefire-reports/` after `mvn test`.
 
-# Part 3: 
+# Part 3: Change Impact Analyzer
+## Build & Test
+
+Run all commands from inside the root `Project/` directory.
+
+**Build and test everything at once:**
+```bash
+mvn install
+```
+
+**Build without running tests:**
+```bash
+mvn install -DskipTests
+```
+**Run only the CIA tests:**
+```bash
+mvn test
+```
+
+**Run only the subject tests:**
+```bash
+mvn -f "Part 3/pom.xml" exec:java
+```
+
+**Clean all compiled output:**
+```bash
+mvn clean
+```

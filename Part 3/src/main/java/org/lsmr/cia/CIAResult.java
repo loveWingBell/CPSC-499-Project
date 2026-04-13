@@ -25,8 +25,8 @@ public class CIAResult {
      * @throws IllegalArgumentException if changePoint < 1 or impactedLines is null
      */
     public CIAResult(int changePoint, List<Integer> impactedLines) {
-        if (changePoint < 1)
-            throw new IllegalArgumentException("changePoint must be >= 1, got: " + changePoint);
+        if (changePoint < 0)
+            throw new IllegalArgumentException("changePoint must be >= 0, got: " + changePoint);
         if (impactedLines == null)
             throw new IllegalArgumentException("impactedLines must not be null");
 

@@ -34,7 +34,7 @@ public class ChangeImpactAnalyzer {
 
     // Runs CIA from the given change-point line number.
     public CIAResult analyze(int changePointLine) {
-        if (changePointLine < 1)
+        if (changePointLine < 0)
             throw new IllegalArgumentException("changePointLine must be >= 1, got: " + changePointLine);
 
         // Step 1: find the PDG node for this line number.
@@ -72,7 +72,7 @@ public class ChangeImpactAnalyzer {
         for (PDGNode node : visited) {
             if (node.equals(start)) continue;   // exclude the change point itself
             int line = extractLineNumber(node);
-            if (line >= 1)                       // exclude virtual nodes (*ENTRY* etc.)
+            if (line >= 0)                       // exclude virtual nodes (*ENTRY* etc.)
                 impacted.add(line);
         }
 
@@ -103,7 +103,7 @@ public class ChangeImpactAnalyzer {
         String prefix = label.substring(0, colon).trim();
         try {
             int n = Integer.parseInt(prefix);
-            return n >= 1 ? n : -1;
+            return n >= 0 ? n : -1;
         } catch (NumberFormatException e) {
             return -1;
         }
