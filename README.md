@@ -42,9 +42,26 @@ Project/
 │       └── test/java/org/lsmr/pdg/
 │           └── PDGBuilderTest.java       JUnit 5 test suite (79 tests)
 │
-├── Part 3/
+├── Part 3/                         CIA module
 │   ├── pom.xml
+│   ├── subjects/                   Plain-text Java programs used as evaluation subjects
+│   │   ├── Subject1.java           Sequential data chain
+│   │   ├── Subject2.java           If-statement with control dependence
+│   │   ├── Subject3.java           While loop with loop-carried dependence
+│   │   └── Subject4.java           If-statement with two independent variables
 │   └── src/
+│       ├── main/java/org/lsmr/cia/
+│       │   ├── CIAResult.java            Output of one CIA query (changePoint + impactedLines)
+│       │   ├── ChangeImpactAnalyzer.java  Core CIA engine — forward BFS over PDG edges
+│       │   └── CIATool.java              CLI entry point
+│       └── test/
+│           ├── java/org/lsmr/cia/
+│           │   ├── ChangeImpactAnalyzerTest.java  JUnit 5 test suite
+│           │   └── eval/
+│           │       ├── CIAEvaluator.java   Precision/recall evaluation runner
+│           │       └── EvaluationOracle.java  Ground-truth oracle entry model
+│           └── resources/eval/
+│               └── oracle.json             Manual ground-truth for evaluation subjects
 ```
 
 ---
@@ -55,6 +72,7 @@ Project/
 |---|---|---|
 | `CFG-W26/CPSC 499.02/src/org/lsmr/cfg` | `cfg` | Control Flow Graph library (Part 1 - Provided) |
 | `Part 2` | `pdg` | Program Dependence Graph builder (Part 2) |
+| `Part 3` | `cia` | Change Impact Analysis tool and evaluator (Part 3) |
 
 ---
 # Part 2: PDF Builder
@@ -173,17 +191,118 @@ mvn install
 ```bash
 mvn install -DskipTests
 ```
+
 **Run only the CIA tests:**
 ```bash
-mvn test
+mvn test -pl "Part 3"
 ```
 
-**Run only the subject tests:**
+**Run the evaluation against the four subject programs:**
 ```bash
-mvn -f "Part 3/pom.xml" exec:java
+mvn exec:java -pl "Part 3"
 ```
 
 **Clean all compiled output:**
 ```bash
 mvn clean
 ```
+
+---
+
+## Running in Eclipse
+
+**Run the CIA test suite:**
+1. In the **Package Explorer**, right-click the `cia` project (`Part 3/`)
+2. Select **Run As → JUnit Test**
+3. The JUnit view will open and show all tests passing
+
+**Run a single test class:**
+1. Expand `Part 3/src/test/java/org/lsmr/cia/`
+2. Right-click `ChangeImpactAnalyzerTest.java`
+3. Select **Run As → JUnit Test**
+
+**Run the evaluator from Eclipse:**
+1. Right-click `Part 3/src/test/java/org/lsmr/cia/eval/CIAEvaluator.java`
+2. Select **Run As → Java Application**
+3. The evaluation report will appear in the Console view
+
+> **Note:** The evaluator reads `oracle.json` from the test classpath and subject `.java` files from `Part 3/subjects/` relative to the working directory. If the subjects are not found, set the working directory to the `Project/` root in the run configuration (**Run Configurations → Arguments → Working directory**).
+
+---
+
+## Usage
+
+### CIATool (CLI)
+
+`CIATool` takes a Java source file and a PDG node number and prints the impact set as JSON to stdout.
+
+**List all node numbers in a subject file:**
+```bash
+mvn exec:java -pl "Part 3" \
+  -Dexec.mainClass=org.lsmr.cia.CIATool \
+  -Dexec.classpathScope=runtime \
+  -Dexec.args="Part 3/subjects/Subject1.java --list"
+```
+
+**Run CIA from a specific node number:**
+```bash
+mvn exec:java -pl "Part 3" \
+  -Dexec.mainClass=org.lsmr.cia.CIATool \
+  -Dexec.classpathScope=runtime \
+  -Dexec.args="Part 3/subjects/Subject1.java 1"
+```
+
+Output format (one JSON object per method, printed to stdout):
+```json
+{"method":"Subject1.run(int)","changePoint":1,"impactedLines":[2,3,4]}
+```
+
+> **Important:** The second argument is the PDG **node number**, not the source line number. Node numbers are assigned sequentially by `StatementNodeBuilder` starting from 0, beginning with a `block` node for the method body. Use `--list` to see all node numbers before querying.
+
+### ChangeImpactAnalyzer (API)
+
+`ChangeImpactAnalyzer` can be used programmatically once a PDG has been built:
+
+```java
+ControlFlowGraph cfg = /* ... parse source via StatementNodeBuilder ... */;
+
+ProgramDependenceGraph pdg = new PDGBuilder(cfg).build();
+ChangeImpactAnalyzer analyzer = new ChangeImpactAnalyzer(pdg);
+
+CIAResult result = analyzer.analyze(1);   // change at node 1
+System.out.println(result.toJson());
+// → {"changePoint":1,"impactedLines":[2,3,4]}
+
+System.out.println(result);
+// → CIA result: change at line 1 impacts [2, 3, 4]
+```
+
+### CIAEvaluator
+
+`CIAEvaluator` loads `oracle.json` from the classpath, runs CIA on each subject, and prints a precision/recall/F1 report. Run it via Maven from the project root:
+
+```bash
+mvn exec:java -pl "Part 3"
+```
+
+To pass a custom subjects directory:
+```bash
+mvn exec:java -pl "Part 3" -Dexec.args="path/to/subjects"
+```
+
+---
+
+## Test Output
+
+The test suite (`ChangeImpactAnalyzerTest`) is organised into six sections:
+
+| Section | Coverage |
+|---|---|
+| 1. `extractLineNumber` | Numeric label parsing; virtual node labels return -1 |
+| 2. `findNodeByLine` | Node lookup by number; prefix disambiguation (e.g. 1 vs 10) |
+| 3. Constructor validation | Null PDG rejected with `IllegalArgumentException` |
+| 4. `analyze()` edge cases | Invalid line numbers, unknown change points, empty methods, leaf nodes, self-exclusion |
+| 5. Integration tests | Sequential chains, if/else, while loops, independent variables — hand-crafted CFGs run through `PDGBuilder` then `ChangeImpactAnalyzer` |
+| 6. Output format | Sorted result list, `toJson()` format, change point stored correctly |
+
+Surefire reports are written to `Part 3/target/surefire-reports/` after `mvn test -pl "Part 3"`.
